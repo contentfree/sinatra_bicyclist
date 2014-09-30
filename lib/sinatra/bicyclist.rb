@@ -11,17 +11,21 @@ module Sinatra
       app.set :cycler, Sinatra::Bicyclist::Cycler.new(app.settings)
 
       app.get '/_cycle' do
+        session[:_cycle_duration] = params[:duration] if params.has_key?('duration')
+
         page = settings.cycler.page(session)
         redirect settings.cycler.group ? "/_cycle/#{page}" : "/#{page}"
       end
 
       app.get '/_cycle/:group' do
+        session[:_cycle_duration] = params[:duration] if params.has_key?('duration')
+
         page = settings.cycler.page(session, params[:group])
         redirect "/#{page}"
       end
 
       app.before do
-        session[:_cycle_duration] = params[:duration] || settings.cycle_duration
+        session[:_cycle_duration] ||= settings.cycle_duration
 
         if group = session.delete(:_cycle)
           headers["Refresh"] = "#{session[:_cycle_duration]}; url=/_cycle/#{group}"
