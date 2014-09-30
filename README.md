@@ -1,10 +1,13 @@
-# SinatraCyclist
+# SinatraBicyclist
+
+This is a fork of SinatraCyclist. It adds functionality to have more than one cycling loops.
+So you can have `/_cycle/apps` and `/_cycle/ops` to loop through different pages.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'sinatra_cyclist'
+    gem 'sinatra_bicyclist'
 
 And then execute:
 
@@ -12,7 +15,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install sinatra_cyclist
+    $ gem install sinatra_bicyclist
 
 Installation into your code depends on how you are using Sinatra.
 
@@ -96,6 +99,19 @@ You can also specify a duration (in seconds) in the params to the cycle action
 ```
 http://sinatra_app.com/_cycle?duration=10
 ```
+
+## Advanced Usage
+
+If you want to have different cycles for different dashboards you can define:
+
+```
+set :routes_to_cycle_through, {
+  applications: [:dash1, :dash2, :dash3],
+  operations: [:dash4, :dash5, :dash6]
+}
+```
+
+Then visiting `/_cycle/applications` will go just through dashboards dash1, dash2 and dash3.
 
 ## Contributing
 
