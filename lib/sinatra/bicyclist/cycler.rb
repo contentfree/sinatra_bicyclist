@@ -1,10 +1,13 @@
+require_relative 'cycle'
+
 module Sinatra
   module Bicyclist
     class Cycler
       attr_accessor :duration
 
-      def initialize(settings)
+      def initialize(settings, cycle_class = Bicyclist::Cycle)
         @settings = settings
+        @cycle_class = cycle_class
       end
 
       def routes
@@ -32,23 +35,10 @@ module Sinatra
         has_groups?
       end
 
-      def page_index(session)
-        page_index = session[:_cycle_page_index] || -1
-        session[:_cycle_page_index] = page_index + 1
-      end
-
-      def random_route(session, group)
-        number_of_routes = pages(group).length
-        pages(group)[page_index(session) % number_of_routes]
-      end
-
-      def reset_index(session)
-        session[:_cycle_page_index] = -1
-      end
-
       def page(session, group = nil)
-        reset_index(session) if group.to_s != session[:_last_cycle].to_s
-        page = random_route(session, group)
+        cycle = @cycle_class.new(session)
+        cycle.reset_index unless cycle.last_cycle == group.to_s
+        page = cycle.page pages(group)
         session[:_cycle] = group || (has_groups? && page)
         page
       end
