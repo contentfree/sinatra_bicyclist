@@ -9,10 +9,7 @@ module Sinatra
         @session[:_cycle_page_index] ||= -1
       end
 
-      def next_index
-        page_index.succ
-      end
-
+      # @param [Fixnum] value
       def page_index=(value)
         @session[:_cycle_page_index] = value
       end
@@ -25,15 +22,15 @@ module Sinatra
         @session[:_last_cycle].to_s
       end
 
+      # @param [Array] pages
       def page(pages)
-        index = next_route(pages)
-        pages[index]
+        self.page_index = next_index(pages.length)
+        pages[page_index]
       end
 
-      def next_route(pages)
-        routes = pages.length
-
-        self.page_index = next_index % routes
+      # @param [Fixnum] max
+      def next_index(max)
+        page_index.succ % max
       end
     end
   end
